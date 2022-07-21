@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="shortcut icon" href="#" />
+    <link rel="stylesheet" href="telemetry.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+            <h2 class="header-h2">
+                Telemetry
+            </h2>
+            <button class="back-to-homepage" onclick="stopReceivingData()" type="button">homepage</button>
+        </div>
+        <div class="container">
+            <div class="drs-box">
+                <input type="checkbox" class="drs-check">
+                <h4 class="drs-header">
+                    DRS
+                </h4>
+            </div>
+            <div class="speed-box">
+                <!-- <div class="circular">
+                    <div class="inner"></div>
+                    <div class="number"></div>
+                    <div class="circle">
+                        <div class="bar right">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="bar left">
+                            <div class="progress"></div>
+                        </div>
+
+                    </div>
+                </div> -->
+                <div class="progress-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        viewBox="37 -5 120 100" width="120" height="100">
+                        <path class="grey" d="M55,90
+                                       A55,55 0 1,1 140,90" style="fill:none;" />
+                        <path class="red" d="M55,90
+                                       A55,55 0 1,1 140,90" style="fill:none;" />
+                    </svg>
+
+                </div>
+                <h4 class="speed-header">Speed</h4>
+                <p class="number">54</p>
+
+            </div>
+            <div class="throttle-box">
+                <div class="load-throttle">
+                    <div class="throttle"></div>
+                </div>
+                <h4 class="throttle-header">
+                    Throttle
+                </h4>
+            </div>
+            <div class="brake-box">
+                <div class="load-brake">
+                    <div class="brake"></div>
+                </div>
+                <h4 class="brake-header">
+                    Brake
+                </h4>
+            </div>
+            <div class="gear-box">
+                <h4 class="gear-count">4</h4>
+                <h4 class="gear-header">Gear</h4>
+            </div>
+            <div class="front-left-tire-box">
+
+                <h4 class="front-left-tire-wear-count">27%</h4>
+                <h4 class="front-left-tire-header">Front Left Tire Wear</h4>
+            </div>
+            <div class="front-right-tire-box">
+                <h4 class="front-right-tire-wear-count">24%</h4>
+
+                <h4 class="front-right-tire-header">Front Right Tire wear</h4>
+
+            </div>
+            <div class="position-box">
+
+                <h4 class="position-count">P5</h4>
+
+
+            </div>
+            <div class="rear-left-tire-box">
+                <h4 class="rear-left-tire-wear-count">22%</h4>
+
+                <h4 class="rear-left-tire-header">Rear Left Tire Wear</h4>
+
+            </div>
+            <div class="rear-right-tire-box">
+                <h4 class="rear-right-tire-wear-count">23%</h4>
+
+                <h4 class="rear-right-tire-header">Rear Right Tire wear</h4>
+
+            </div>
+            <div class="engine-rpm-box">
+                <h4 class="engine-rpm-count">7000</h4>
+
+                <h4 class="engine-rpm-header">Engine RPM</h4>
+
+            </div>
+
+            <div class="lap-times">
+                <h4 class="best-lap">Best lap: <span class="best-lap-number">1:13:333</span></h4>
+                <h4 class="last-lap">Last lap: <span class="last-lap-number">1:14:333</span></h4>
+
+            </div>
+            <div class="current-lap-sectors">
+                <h4 class="current-lap-header">Current lap</h4>
+                <div class="sectors">
+                    <div class="sector1-time sector-time">
+                        <h4 class="sector sector1-time-num best-time">18.5</h4>
+                    </div>
+                    <div class="sector2-time sector-time">
+                        <h4 class="sector sector2-time-num">16.9</h4>
+
+                    </div>
+                    <div class="sector3-time sector-time">
+                        <h4 class="sector sector3-time-num">---</h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="player-ahead">
+                <h4 class="player-ahead-header">Player ahead</h4>
+                <h4 class="player-ahead-name">Bottas</h4>
+                <h4 class="player-ahead-time">+02:421</h4>
+                <h4 class="player-ahead-pace">1:13:200</h4>
+            </div>
+            <div class="player-behind">
+                <h4 class="player-behind-header">Player behind</h4>
+                <h4 class="player-behind-name">Tsunoda</h4>
+                <h4 class="player-behind-time">+01:275</h4>
+                <h4 class="player-behind-pace">1:13:900</h4>
+            </div>
+
+            <div class="img-div">
+
+                <h4 class="circuit-name">Spa</h4>
+            </div>
+
+
+
+        </div>
+
+
+
+        <!-- SPEED -->
+        <!-- <div class="circular">
+        <div class="inner"></div>
+        <div class="number"></div>
+        <div class="circle">
+            <div class="bar right">
+                <div class="progress"></div>
+            </div>
+            <div class="bar left">
+                <div class="progress"></div>
+            </div>
+
+        </div>
+    </div> -->
+        <!-- SPEED -->
+
+        <!-- <div class="btns">
+        <button class="start">Start receiving data</button>
+        <button class="stop">Stop receiving data</button>
+
+    </div> -->
+
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="streaming_toggle.js"></script>
+        <script src="telemetry.js"></script>
+</body>
+
+</body>
+
+</html>
