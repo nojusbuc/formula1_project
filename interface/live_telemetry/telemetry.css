@@ -163,12 +163,57 @@ path {
 }
 
 .red {
-    stroke: #e33800;
+    stroke: #349905;
     stroke-dasharray: 248.45840454101562;
     stroke-dashoffset: 0;
     transition: stroke-dashoffset 0.1s ease;
 }
 
+
+
+.progress-container {
+    stroke: darken(#392F32, 5%);
+    stroke-width: 2px;
+    fill: #ffffff;
+}
+
+
+.progress-content {
+    stroke: darken(#C2E362, 5%);
+    stroke-width: 2px;
+    fill: #ffffff;
+}
+
+.progress-content line {
+    fill: #fff !important;
+}
+
+.throttle-rect-svg {
+
+    position: absolute;
+}
+
+.main-rect {
+    transform: rotate(180deg);
+    transition-property: transform;
+    transition-duration: 0.1s;
+    transform: scaleY(70%);
+    transform-origin: 100% 100%;
+}
+
+/* .throttle-rect {
+
+    transform: rotate(180deg);
+    transition-property: transform;
+    transition-duration: 0.1s;
+    transform: scaleY(40%);
+    transform-origin: 100% 100%;
+
+} */
+
+/* @keyframes rect-progress {
+
+} */
 
 .stat {
     width: 200px;
@@ -178,6 +223,7 @@ path {
     grid-row: 2/3;
     grid-column: 2/3;
     border: 2px solid white;
+
 }
 
 /* Throttle progress bar */
@@ -206,13 +252,8 @@ path {
     margin: 0;
 }
 
-.throttle-box {
-    grid-row: 2/3;
-    grid-column: 2/3;
-    border: 2px solid white;
-}
 
-/* Throttle progress bar */
+
 .load-brake {
     margin: 0 auto;
     width: 25px;
@@ -222,17 +263,6 @@ path {
     position: relative;
 }
 
-.brake {
-    width: 100%;
-    display: block;
-    font-family: arial;
-    font-size: 12px;
-    background-color: #830505;
-    color: #fff;
-    position: absolute;
-    bottom: 0;
-    /* height: 0%; */
-}
 
 .brake-header {
     margin: 0;
@@ -242,7 +272,14 @@ path {
     grid-row: 1/2;
     grid-column: 2/3;
     border: 2px solid white;
+
 }
+
+.brake-rect-svg {
+    position: absolute;
+}
+
+
 
 .gear-box {
     grid-row: 2/3;

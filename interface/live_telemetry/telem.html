@@ -40,8 +40,7 @@
                     </div>
                 </div> -->
                 <div class="progress-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                        viewBox="37 -5 120 100" width="120" height="100">
+                    <svg x="0px" y="0px" viewBox="37 -5 120 100" width="120" height="100">
                         <path class="grey" d="M55,90
                                        A55,55 0 1,1 140,90" style="fill:none;" />
                         <path class="red" d="M55,90
@@ -53,18 +52,48 @@
                 <p class="number">54</p>
 
             </div>
+
             <div class="throttle-box">
-                <div class="load-throttle">
-                    <div class="throttle"></div>
-                </div>
+
+                <svg class="throttle-rect-svg" width="30" height="120">
+                    <rect class="throttle-rect" width="30" height="120" fill="#34cc0a" y="0%" stroke="#fff"
+                        stroke-width="2px" />
+                    <!-- style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" -->
+                </svg>
+                <svg width="30" height="120">
+                    <rect width="30" height="120" fill="#fff" y="0%" />
+                    <!-- style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" -->
+                </svg>
+
+
+                <!-- <svg id=" line-progress" height="120" width="120">
+                    <g class="progress-container">
+                        <line x1="50%" y1="0%" x2="50%" y2="100%" stroke-width="30" />
+                    </g>
+                    <g class="progress-content">
+                        <line x1="50%" y1="0%" x2="50%" y2="100%" stroke="#34cc0a" stroke-dasharray="100%"
+                            stroke-dashoffset="-30%" stroke-width="28" />
+                    </g>
+                </svg> -->
+
+
+
+
+
                 <h4 class="throttle-header">
                     Throttle
                 </h4>
             </div>
             <div class="brake-box">
-                <div class="load-brake">
-                    <div class="brake"></div>
-                </div>
+                <svg class="brake-rect-svg" width="30" height="120">
+                    <rect class="brake-rect main-rect" width="30" height="120" fill="#870404" y="0%" stroke="#fff"
+                        stroke-width="2px" />
+                    <!-- style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" -->
+                </svg>
+                <svg width="30" height="120">
+                    <rect width="30" height="120" fill="#fff" y="0%" />
+                    <!-- style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" -->
+                </svg>
                 <h4 class="brake-header">
                     Brake
                 </h4>
