@@ -51,7 +51,7 @@ function updateSpeed(speed) {
     setInterval(function () {
 
         speedValue = speedometer.style.strokeDashoffset
-        numb.innerText = Math.round(maxSpeed - speedValue / ratio)
+        numb.innerText = Math.round(maxSpeed - speedValue / ratio) + ' kph'
 
     }, 20)
 
@@ -70,5 +70,5 @@ function updateBrake(brake) {
 }
 
 function updateGear(gear) {
-    gearElement.textContent = gear
+    gearElement.textContent = 'GEAR ' + gear
 }

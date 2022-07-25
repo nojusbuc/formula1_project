@@ -13,16 +13,13 @@ body {
     color: white;
     width: 94%;
     margin: 0 auto;
-    /* height: 100vh; */
-    /* overflow: hidden; */
-
 
 }
 
 .container {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    /* grid-template-columns: repeat(9, 1fr); */
+    /* grid-template-rows: repeat(6, 1fr); */
     align-items: center;
     text-align: center;
     grid-row-gap: 20px;
@@ -31,7 +28,21 @@ body {
 
 }
 
-.container div {}
+.main-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr 1fr;
+    /* grid-template-columns: auto auto auto auto auto; */
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    /* grid-template-rows: auto auto auto auto; */
+    /* min-width: 100px;
+    min-height: 100px; */
+    column-gap: 5%;
+    row-gap: 5%;
+    align-items: center;
+    justify-items: center;
+
+
+}
 
 .header {
     text-align: center;
@@ -42,12 +53,48 @@ body {
 .drs-box {
     text-align: center;
     grid-row: 1/2;
-    grid-column: 1/2;
-    align-items: end;
-    border: 2px solid white;
-
+    grid-column: 2/3;
 
 }
+
+.ers-box {
+    text-align: center;
+    grid-row: 1/2;
+    grid-column: 4/5;
+}
+
+.speed-box {
+    text-align: center;
+    grid-row: 3/4;
+    grid-column: 3/4;
+}
+
+.speedometer-box {
+    transform: scale(1.3);
+    grid-row: 2/5;
+    grid-column: 2/5;
+
+}
+
+.brake-box {
+    grid-row: 1/5;
+    grid-column: 1/2;
+
+}
+
+.throttle-box {
+    grid-row: 1/5;
+    grid-column: 5/6;
+    align-self: end;
+
+}
+
+.gear-box {
+    grid-row: 4/5;
+    grid-column: 3/4;
+
+}
+
 
 .drs-check {
     margin: 0;
@@ -55,96 +102,38 @@ body {
 
 .drs-header {
     margin: 0;
+    padding: 0;
 }
 
-.speed-box {
-    /* transform: scale(0.5); */
-    grid-row: 2/3;
-    grid-column: 1/2;
-    border: 2px solid white;
+.ers-header {
+    margin: 0;
+    padding: 0;
+}
 
+.speed-header {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+}
+
+.gear-header {
+    margin: 0;
+    padding: 0;
+    font-size: 1.1em;
+}
+
+.brake-header {
+    margin: 0;
+    padding: 0;
+}
+
+.throttle-header {
+    margin: 0;
+    padding: 0;
 }
 
 
-/* .circular {
-    height: 100px;
-    width: 100px;
-    position: relative;
-    transform: scale(1);
 
-}
-
-.circular .inner {
-    position: absolute;
-    z-index: 6;
-    top: 50%;
-    left: 50%;
-    height: 80px;
-    width: 80px;
-    margin: -40px 0 0 -40px;
-    background: #303030;
-    border-radius: 100%;
-
-}
-
-.circular .number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    font-size: 18px;
-    font-weight: 500;
-    color: white;
-}
-
-.circular .bar {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background: #fff;
-    border-radius: 100%;
-    clip: rect(0px, 100px, 100px, 50px);
-}
-
-.circle .bar .progress {
-
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    border-radius: 100%;
-    clip: rect(0px, 50px, 100px, 0px);
-    background: #00c500;
-}
-
-.circle .right .progress {
-    z-index: 1;
-    animation: left 0s linear both;
-
-}
-
-@keyframes right {
-    100% {
-        transform: rotate(var(--right-rotation));
-    }
-}
-
-.circle .left {
-    transform: rotate(180deg);
-    z-index: 3;
-
-}
-
-.circle .left .progress {
-    animation: right 0s linear both;
-    animation-delay: 0s;
-}
-
-@keyframes left {
-    100% {
-        transform: rotate(var(--left-rotation));
-    }
-} */
 
 .progress-wrapper {
     /* height: 100vh; */
@@ -219,12 +208,6 @@ path {
     width: 200px;
 }
 
-.throttle-box {
-    grid-row: 2/3;
-    grid-column: 2/3;
-    border: 2px solid white;
-
-}
 
 /* Throttle progress bar */
 .load-throttle {
@@ -248,10 +231,6 @@ path {
     height: 30%;
 }
 
-.throttle-header {
-    margin: 0;
-}
-
 
 
 .load-brake {
@@ -264,16 +243,9 @@ path {
 }
 
 
-.brake-header {
-    margin: 0;
-}
 
-.brake-box {
-    grid-row: 1/2;
-    grid-column: 2/3;
-    border: 2px solid white;
 
-}
+
 
 .brake-rect-svg {
     position: absolute;
@@ -281,13 +253,8 @@ path {
 
 
 
-.gear-box {
-    grid-row: 2/3;
-    grid-column: 3/4;
-    border: 2px solid white;
-}
 
-.gear-header {}
+
 
 .front-left-tire-box {
     grid-row: 4/5;

@@ -26,6 +26,7 @@ class UsefulData():
             'bestLapTime': None,
             'sector1Time': None,
             'sector2Time': None,
+            'ersActivated': None,
         }
 
     def fill_in_data(self, current_frame, current_frame_data, playerCar):
@@ -35,6 +36,7 @@ class UsefulData():
         self.list_data['gear'] = current_frame_data[PacketID.CAR_TELEMETRY].carTelemetryData[player_car].gear
         self.list_data['engineRPM'] = current_frame_data[PacketID.CAR_TELEMETRY].carTelemetryData[player_car].engineRPM
         self.list_data['drs'] = current_frame_data[PacketID.CAR_TELEMETRY].carTelemetryData[player_car].drs
+        self.list_data['ersActivated'] = True if current_frame_data[PacketID.CAR_STATUS].carStatusData[player_car].ersDeployMode != 0 else False
 
         print(self.list_data['speed'])
 
