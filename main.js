@@ -2,7 +2,7 @@
 const { response } = require('express')
 const express = require('express')
 const app = express()
-
+// const chroma = require('chroma-js')
 const { spawn } = require('child_process')
 const { PythonShell } = require('python-shell')
 
@@ -11,6 +11,12 @@ const db = new sqlite3.Database('./local_database/pydatabase.db', sqlite3.OPEN_R
     if (err) return console.error(err.message)
 
     console.log('connection sukses')
+
+})
+const testDb = new sqlite3.Database('./local_database/testdb.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) return console.error(err.message)
+
+    console.log('connection sukses to test db')
 
 })
 
@@ -36,5 +42,9 @@ app.post('/pyfile', (req, res) => {
 
     res.end()
 
+})
+
+app.get('/getDb', (req, res) => {
+    // run testDB
 })
 

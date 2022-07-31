@@ -10,16 +10,27 @@ const throttleRect = document.querySelector('.throttle-rect')
 const brakeRect = document.querySelector('.brake-rect')
 
 
+// variable for color calculator
+// const f = chroma.scale(['green', 'yellow', 'red']);
+
+// tyres variables
+const tyreBoxes = document.querySelectorAll('.tyre-box')
+const tyreWearCounts = document.querySelectorAll('.tyre-wear-count')
+const tyreSurfaceTemps = document.querySelectorAll('.tyre-surface-temp')
+
+// variables for drs
+
+const drsBox = document.querySelector('.drs-box')
+
+//variables for ers
+const ersBox = document.querySelector('.ers-box')
+
 
 let counter = 0;
 const cnt = document.querySelector('.speed')
 const throttleElement = document.querySelector('.throttle')
 const brakeElement = document.querySelector('.brake')
 const gearElement = document.querySelector('.gear-count')
-const frontLeftTireWearElement = document.querySelector('.frontleft-tire-wear-count')
-const frontRightTireWearElement = document.querySelector('.front-right-tire-wear-count')
-const rearLeftTireWearElement = document.querySelector('.rear-left-tire-wear-count')
-const rearRightTireWearElement = document.querySelector('.rear-right-tire-wear-count')
 const positionElement = document.querySelector('.position-count')
 const engineRPMElement = document.querySelector('.engine-rpm-count')
 const bestLapElement = document.querySelector('.best-lap-count')
@@ -40,6 +51,10 @@ setInterval(async () => {
     updateThrottle(JSON.parse(data)['throttle'])
     updateBrake(JSON.parse(data)['brake'])
     updateGear(JSON.parse(data)['gear'])
+    updateDRS(JSON.parse(data)['drs'])
+    updateERS(JSON.parse(data)['ersActivated'])
+    updateTyreWear(JSON.parse(data)['tyreWear'])
+    updateTyreTemps(JSON.parse(data)['tyreSurfaceTemps'])
 
 }, 100)
 
@@ -71,4 +86,40 @@ function updateBrake(brake) {
 
 function updateGear(gear) {
     gearElement.textContent = 'GEAR ' + gear
+}
+
+const tyreColorCalculator = (percentage, tyreElement) => {
+
+}
+
+const updateDRS = (drs) => {
+    if (drs == 1) {
+        drsBox.style.backgroundColor = '#349905'
+    } else {
+        drsBox.style.backgroundColor = ""
+    }
+}
+
+const updateERS = (ers) => {
+    if (ers == true) {
+        ersBox.style.backgroundColor = '#349905'
+    } else {
+        ersBox.style.backgroundColor = ""
+    }
+}
+
+const updateTyreWear = (tyreWear) => {
+
+
+    for (let i = 0; i < 4; i++) {
+        tyreWearCounts[i].textContent = `Wear: ${tyreWear[i]}`
+    }
+
+
+}
+
+const updateTyreTemps = (tyreTemps) => {
+    for (let i = 0; i < 4; i++) {
+        tyreSurfaceTemps[i].textContent = `Temp: ${tyreTemps[i]}`
+    }
 }

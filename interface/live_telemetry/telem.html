@@ -19,17 +19,14 @@
             <button class="back-to-homepage" onclick="stopReceivingData()" type="button">homepage</button>
         </div>
         <div class="container">
+
             <div class="main-info">
                 <div class="drs-box">
-
-
                     <h4 class="drs-header">
                         DRS
                     </h4>
                 </div>
                 <div class="ers-box">
-
-
                     <h4 class="ers-header">
                         ERS
                     </h4>
@@ -43,17 +40,11 @@
                                                        A55,55 0 1,1 140,90" style="fill:none;" />
                         </svg>
                     </div>
-
-
                 </div>
-
                 <div class="speed-box">
-
                     <p class="number speed-header">54</p>
                 </div>
-
                 <div class="throttle-box">
-
                     <svg class="throttle-rect-svg" width="30" height="120">
                         <rect class="throttle-rect" width="30" height="120" fill="#34cc0a" y="0%" stroke="#fff"
                             stroke-width="2px" />
@@ -61,15 +52,6 @@
                     <svg width="30" height="120">
                         <rect width="30" height="120" fill="#fff" y="0%" />
                     </svg>
-
-                    <!-- <svg class="throttle-rect-svg" width="60" height="280" viewBox="0 0 100 100">
-                        <rect class="throttle-rect" width="60" height="280" fill="#34cc0a" y="0%" stroke="#fff"
-                            stroke-width="2px" />
-                    </svg>
-                    <svg width="60" height="280" viewBox="0 0 100 100">
-                        <rect width="60" height="280" fill="#fff" y="0%" />
-                    </svg> -->
-
                 </div>
                 <div class="brake-box">
                     <svg class="brake-rect-svg" width="30" height="120">
@@ -79,74 +61,112 @@
                     <svg width="30" height="120">
                         <rect width="30" height="120" fill="#fff" y="0%" />
                     </svg>
-
                 </div>
                 <div class="gear-box">
                     <h4 class="gear-count gear-header">4</h4>
-                    <!-- <h4 class="gear-header">Gear</h4> -->
                 </div>
 
-            </div>
-
-            <div class="front-left-tire-box">
-
-                <h4 class="front-left-tire-wear-count">27%</h4>
-                <h4 class="front-left-tire-header">Front Left Tire Wear</h4>
-            </div>
-            <div class="front-right-tire-box">
-                <h4 class="front-right-tire-wear-count">24%</h4>
-
-                <h4 class="front-right-tire-header">Front Right Tire wear</h4>
 
             </div>
-            <div class="position-box">
+            <div class="tyre-panel">
+                <h3 class="tyre-header">Tyre Panel</h3>
+                <div class="tyre-grid">
+                    <div class="tyre-wear-boxes">
+                        <div class="tyre-box">
+                            <h4 class="tyre-wear-count">Wear: 27%</h4>
+                        </div>
+                        <div class="tyre-box">
+                            <h4 class="tyre-wear-count">Wear: 24%</h4>
+                        </div>
+                        <div class="tyre-box">
+                            <h4 class="tyre-wear-count">Wear: 22%</h4>
+                        </div>
+                        <div class="tyre-box">
+                            <h4 class="tyre-wear-count">Wear: 23%</h4>
+                        </div>
+                    </div>
 
+                    <div class="tyre-temp-box">
+                        <h4 class="tyre-surface-temp">91 C</h4>
+                        <h4 class="tyre-surface-temp">93 C</h4>
+                        <h4 class="tyre-surface-temp">95 C</h4>
+                        <h4 class="tyre-surface-temp">96 C</h4>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="lap-data">
+                <div class="current-lap lap-element">
+                    <h3 class="lap-header">Current lap</h3>
+                    <h4 class="time">running time</h4>
+                    <div class="sectors">
+                        <div class="current-sector s1 sector">
+                            <h4 class="sector-heading">S1</h4>
+                            <h4 class="sector-time current">21:972</h4>
+                        </div>
+                        <div class="current-sector s2 sector">
+                            <h4 class="sector-heading">S2</h4>
+                            <h4 class="sector-time current">23:650</h4>
+                        </div>
+                        <div class="current-sector s3 sector">
+                            <h4 class="sector-heading">S3</h4>
+                            <h4 class="sector-time current">24:326</h4>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="best-lap lap-element">
+                    <h3 class="lap-header">Best lap</h3>
+
+                    <h4 class="best-lap-time">1:10:000</h4>
+                    <div class="sectors">
+                        <div class="best-sector s1 sector">
+                            <h4 class="sector-heading">S1</h4>
+                            <h4 class="sector-time best">21:972</h4>
+                        </div>
+                        <div class="best-sector s2 sector">
+                            <h4 class="sector-heading">S2</h4>
+                            <h4 class="sector-time best">23:650</h4>
+                        </div>
+                        <div class="best-sector s3 sector">
+                            <h4 class="sector-heading">S3</h4>
+                            <h4 class="sector-time best">24:326</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="last-lap lap-element">
+                    <h3 class="lap-header">Last lap</h3>
+
+                    <h4 class="last-lap-time">1:11:000</h4>
+                    <div class="sectors">
+                        <div class="last-sector s1 sector">
+                            <h4 class="sector-heading">S1</h4>
+                            <h4 class="sector-time last">21:972</h4>
+                        </div>
+                        <div class="last-sector s2 sector">
+                            <h4 class="sector-heading">S2</h4>
+                            <h4 class="sector-time last">23:650</h4>
+                        </div>
+                        <div class="last-sector s3 sector">
+                            <h4 class="sector-heading">S3</h4>
+                            <h4 class="sector-time last">24:326</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="position-box">
                 <h4 class="position-count">P5</h4>
-
-
-            </div>
-            <div class="rear-left-tire-box">
-                <h4 class="rear-left-tire-wear-count">22%</h4>
-
-                <h4 class="rear-left-tire-header">Rear Left Tire Wear</h4>
-
-            </div>
-            <div class="rear-right-tire-box">
-                <h4 class="rear-right-tire-wear-count">23%</h4>
-
-                <h4 class="rear-right-tire-header">Rear Right Tire wear</h4>
-
-            </div>
-            <div class="engine-rpm-box">
+            </div> -->
+            <!-- <div class="engine-rpm-box">
                 <h4 class="engine-rpm-count">7000</h4>
-
                 <h4 class="engine-rpm-header">Engine RPM</h4>
+            </div> -->
 
-            </div>
 
-            <div class="lap-times">
-                <h4 class="best-lap">Best lap: <span class="best-lap-number">1:13:333</span></h4>
-                <h4 class="last-lap">Last lap: <span class="last-lap-number">1:14:333</span></h4>
 
-            </div>
-            <div class="current-lap-sectors">
-                <h4 class="current-lap-header">Current lap</h4>
-                <div class="sectors">
-                    <div class="sector1-time sector-time">
-                        <h4 class="sector sector1-time-num best-time">18.5</h4>
-                    </div>
-                    <div class="sector2-time sector-time">
-                        <h4 class="sector sector2-time-num">16.9</h4>
-
-                    </div>
-                    <div class="sector3-time sector-time">
-                        <h4 class="sector sector3-time-num">---</h4>
-
-                    </div>
-
-                </div>
-
-            </div>
 
             <div class="player-ahead">
                 <h4 class="player-ahead-header">Player ahead</h4>
@@ -161,10 +181,7 @@
                 <h4 class="player-behind-pace">1:13:900</h4>
             </div>
 
-            <div class="img-div">
 
-                <h4 class="circuit-name">Spa</h4>
-            </div>
 
 
 
