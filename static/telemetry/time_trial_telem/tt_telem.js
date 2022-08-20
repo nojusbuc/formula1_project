@@ -43,20 +43,20 @@ const sectorTwoElement = document.querySelector('.sector2-time-num')
 
 
 
-setInterval(async () => {
+// setInterval(async () => {
 
-    const response = await fetch('telem-data.json')
-    const data = await response.json()
-    updateSpeed(JSON.parse(data)['speed'])
-    updateThrottle(JSON.parse(data)['throttle'])
-    updateBrake(JSON.parse(data)['brake'])
-    updateGear(JSON.parse(data)['gear'])
-    updateDRS(JSON.parse(data)['drs'])
-    updateERS(JSON.parse(data)['ersActivated'])
-    updateTyreWear(JSON.parse(data)['tyreWear'])
-    updateTyreTemps(JSON.parse(data)['tyreSurfaceTemps'])
+//     const response = await fetch('telem-data.json')
+//     const data = await response.json()
+//     updateSpeed(JSON.parse(data)['speed'])
+//     updateThrottle(JSON.parse(data)['throttle'])
+//     updateBrake(JSON.parse(data)['brake'])
+//     updateGear(JSON.parse(data)['gear'])
+//     updateDRS(JSON.parse(data)['drs'])
+//     updateERS(JSON.parse(data)['ersActivated'])
+//     updateTyreWear(JSON.parse(data)['tyreWear'])
+//     updateTyreTemps(JSON.parse(data)['tyreSurfaceTemps'])
 
-}, 100)
+// }, 100)
 
 function updateSpeed(speed) {
 

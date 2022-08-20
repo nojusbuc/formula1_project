@@ -352,10 +352,10 @@ path {
 }
 
 
-
+/* 
 .player-ahead-time {}
 
-.player-ahead-pace {}
+.player-ahead-pace {} */
 
 .player-behind {
     grid-row: 4/5;
@@ -376,10 +376,10 @@ path {
 }
 
 
-.player-behind-time {}
+/* .player-behind-time {}
 
 .player-behind-pace {}
-
+ */
 
 
 .best-time {

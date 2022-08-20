@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="shortcut icon" href="#" />
-    <link rel="stylesheet" href="telemetry.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='telemetry/time_trial_telem/tt_telem.css')}}">
 </head>
 
 <body>
@@ -16,7 +16,14 @@
             <h2 class="header-h2">
                 Telemetry
             </h2>
-            <button class="back-to-homepage" onclick="stopReceivingData()" type="button">homepage</button>
+            <button class="back-to-homepage" type="button"><a href="/">homepage</a></button>
+            <!-- <form action=""><button type="submit">Display Sessions</button></form> -->
+            {% block content%}
+                {%for sess in session_data%}
+                    {{sess.session_id}}
+                {% endfor%}
+
+            {% endblock %}
         </div>
         <div class="container">
 
@@ -168,7 +175,7 @@
 
 
 
-            <div class="player-ahead">
+            <!-- <div class="player-ahead">
                 <h4 class="player-ahead-header">Player ahead</h4>
                 <h4 class="player-ahead-name">Bottas</h4>
                 <h4 class="player-ahead-time">+02:421</h4>
@@ -179,7 +186,7 @@
                 <h4 class="player-behind-name">Tsunoda</h4>
                 <h4 class="player-behind-time">+01:275</h4>
                 <h4 class="player-behind-pace">1:13:900</h4>
-            </div>
+            </div> -->
 
 
 
@@ -214,8 +221,8 @@
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-        <script src="streaming_toggle.js"></script>
-        <script src="telemetry.js"></script>
+        <script src="{{ url_for('static', filename='telemetry/streaming_toggle.js')}}"></script>
+        <script src="{{ url_for('static', filename='telemetry/time_trial_telem/tt_telem.js')}}"></script>
 </body>
 
 </body>
