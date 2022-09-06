@@ -24,36 +24,36 @@ from extensions import db, app
 #     return celery
 
 
-@app.route('/')
-def home():
-    Streaming.query.filter_by(str_id=0).update({'should_run': 0})
-    db.session.commit()
-
-    return render_template('index.html')
-
-
-@app.route('/telemetry')
-def telemetry(): 
-    Streaming.query.filter_by(str_id=0).update({'should_run': 1})
-    db.session.commit()
-
-    Thread(target=thread2).start
-    return render_template('telemetry/time_trial_telem/telem.html')
-
-def thread1():
-    app.run()
-
-def thread2():
-    code = compile(d.read(
-        ), 'C:/Users/noahm/Desktop/Projects/f1_telem/streaming/frame_data.py', "exec")
-    exec(code, {})
-    print('executed')
-
-
-# db.init_app(app)
-# with app.app_context():
-#     db.create_all()
+# @app.route('/')
+# def home():
+#     Streaming.query.filter_by(str_id=0).update({'should_run': 0})
 #     db.session.commit()
+
+#     return render_template('index.html')
+
+
+# @app.route('/telemetry')
+# def telemetry(): 
+#     Streaming.query.filter_by(str_id=0).update({'should_run': 1})
+#     db.session.commit()
+
+#     Thread(target=thread2).start
+#     return render_template('telemetry/time_trial_telem/telem.html')
+
+# def thread1():
+#     app.run()
+
+# def thread2():
+#     code = compile(d.read(
+#         ), 'C:/Users/noahm/Desktop/Projects/f1_telem/streaming/frame_data.py', "exec")
+#     exec(code, {})
+#     print('executed')
+
+
+db.init_app(app)
+with app.app_context():
+    db.create_all()
+    db.session.commit()
 
 
 # celery = make_celery(app)
@@ -72,15 +72,15 @@ def thread2():
 
 
 
-if __name__ == '__main__':
-    try:
-        d = open('C:/Users/noahm/Desktop/Projects/f1_telem/streaming/frame_data.py', "rb")
-        Thread(target=thread1).start()
-        # app.run()
+# if __name__ == '__main__':
+#     try:
+#         d = open('C:/Users/noahm/Desktop/Projects/f1_telem/streaming/frame_data.py', "rb")
+#         Thread(target=thread1).start()
+#         # app.run()
     
-    except KeyboardInterrupt:
-        d.close()
-        sys.exit('keyboard inter')
+#     except KeyboardInterrupt:
+#         d.close()
+#         sys.exit('keyboard inter')
         
 
 

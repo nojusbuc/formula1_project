@@ -2,14 +2,15 @@ import socket
 from packets import PacketID, unpack_udp_packet
 import math
 import time
+import datetime
 import json
 import sqlite3
 from flask_sqlalchemy import SQLAlchemy
 import sys
 import os
-from dattypes import SESSION_TYPES, TRACK_IDS, WEATHER_TYPES, FORMULA_TYPES, IS_ONLINE, TEAM_IDS
+from dattypes import *
 sys.path.append('./')
-from models import Session, Player, Streaming
+# from models import Session, Player, Streaming
 from extensions import db, app
 
                 # sessions = db.session.query.order_by(UserSession.session_uid)
@@ -67,84 +68,6 @@ from extensions import db, app
         #     test_cur.execute('SELECT * FROM lap_data')
         #     print(test_cur.fetchall())
 
-    # def shouldRun():
-
-    # while True:
-
-    #     current_val = (
-    #         c.execute('SELECT * FROM runningProgram WHERE id = 0')).fetchone()
-
-    #     if current_val[1] == 'True':
-
-    #         data, addr = sock.recvfrom(PACKET_SIZE)
-    #         packet = unpack_udp_packet(data)
-
-    #         current_frame_data[PacketID(packet.header.packetId)] = packet
-
-    #         any_packet = next(iter(current_frame_data.values()))
-    #         player_car = any_packet.header.playerCarIndex
-
-    #         if time_from_last_print + 0.1 < time.time():
-    #             try:
-    #                 use_data.fill_in_data(
-    #                     current_frame, current_frame_data, player_car)
-    #             except:
-    #                 current_frame = packet.header.frameIdentifier
-
-    #             use_data.write_to_json()
-
-    #             # if packet.header.packetId == 2:
-    #             #     use_data.handle_lap_data()
-
-    #             time_from_last_print = time.time()
-
-        # try:
-
-        #     if time_from_last_print + 0.1 < time.time():
-        #         use_data.fill_in_data(
-        #             current_frame, current_frame_data, player_car)
-        #         use_data.write_to_json()
-
-        #         if packet.header.packetId == 2:
-        #             use_data.handle_lap_data()
-
-        #         time_from_last_print = time.time()
-        # except:
-        #     current_frame = packet.header.frameIdentifier
-
-
-# def read_packets(sock, PACKET_SIZE, current_frame_data, use_data):
-
-    # while True:
-
-    #     data, addr = sock.recvfrom(PACKET_SIZE)
-    #     packet = unpack_udp_packet(data)
-
-    #     current_frame_data[PacketID(packet.header.packetId)] = packet
-
-    #     any_packet = next(iter(current_frame_data.values()))
-    #     player_car = any_packet.header.playerCarIndex
-
-    #         # if time_from_last_print + 0.1 < time.time():
-    #     try:
-    #         use_data.fill_in_data(
-    #                     current_frame, current_frame_data, player_car)
-    #     except:
-    #         current_frame = packet.header.frameIdentifier
-
-    #                 # use_data.write_to_json()
-    #     use_data.sessionTable()
-
-    #     argum = False
-
-    #         # if packet.header.packetId == 1:
-    #         #     print(packet.header.sessionUID)
-    #             # use_data.handle_lap_data()
-
-    #         # time_from_last_print = time.time()
-
-
-
 class UsefulData():
 
     def __init__(self):
@@ -180,27 +103,139 @@ class UsefulData():
         self.list_data['tyreSurfaceTemps'] = current_frame_data[
             PacketID.CAR_TELEMETRY].carTelemetryData[player_car].tyresSurfaceTemperature[:]
 
-
     def sessionTable(self, current_frame_data, player_car, packet):
-        if Session.query.filter_by(session_id=int(str(packet.header.sessionUID)[:10])).first() is None:
-            # if db.session.query(Session.session_id).filter_by(session_id=current_frame_data[PacketID.SESSION].header.sessionUID).first() is None:
-            session_data = Session(
-                session_id=int(str(packet.header.sessionUID)[:10]),
-                track_id=TRACK_IDS[packet.trackId],
-                session_type=SESSION_TYPES[packet.sessionType],
-                weather=WEATHER_TYPES[packet.weather],
-                formula_type=FORMULA_TYPES[packet.formula],
-                isOnline=IS_ONLINE[packet.networkGame],
-                # team=TEAM_IDS[current_frame_data[PacketID.PARTICIPANT].participants[player_car].teamId]
-            )
 
-            db.session.add(session_data)
-            db.session.commit()
+        val = cur.execute(
+            f'SELECT session_id FROM session WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()
+        if val is None:
+            cur.execute(
+                f'''
+                INSERT INTO session 
+                (session_id, track_id, session_type, weather, formula_type, is_online, many_cars) 
+                VALUES 
+                (
+                    "{int(str(packet.header.sessionUID)[:10])}",
+                    "{(TRACK_IDS[packet.trackId])}",
+                    "{SESSION_TYPES[packet.sessionType]}",
+                    "{WEATHER_TYPES[packet.weather]}",
+                    "{FORMULA_TYPES[packet.formula]}",
+                    "{packet.networkGame}",
+                    "{0 if (SESSION_TYPES[packet.sessionType] in ['Time Trial', 'unknown']) else 1}"
+                    )''')
+            conn.commit()
+    
+    def updateSessionTable(self, packet):
+        active_cars_val = cur.execute(
+            f'SELECT active_cars FROM session WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()
+        if active_cars_val != '':
+            cur.execute(
+                f'UPDATE session SET active_cars={packet.numActiveCars} WHERE session_id={int(str(packet.header.sessionUID)[:10])}')
+            conn.commit()
+
+
+    
+    def playerTable(self, packet):
         
-    def addTeam(self, packet, player_car):
-        Session.query.filter_by(session_id=int(
-            str(packet.header.sessionUID)[:10])).update({'team': TEAM_IDS[packet.participants[player_car].teamId]})
-        db.session.commit()
+            # val = cur.execute(
+            #     f'SELECT player_id FROM player WHERE player_id = {int(str(packet.playerId) + str(packet.header.sessionUID)[:7])}').fetchone()
+            val = cur.execute(
+                f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
+
+            for i in range(packet.numActiveCars):
+                
+                if len(val) == 0:
+
+                    driver_name = 'User' if packet.participants[
+                        i].driverId == 255 else DRIVER_IDS[packet.participants[i].driverId]
+                    
+                    cur.execute(
+                        f'''INSERT INTO player 
+                        (session_id, driver, player_index, team)
+                        VALUES (
+                            "{int(str(packet.header.sessionUID)[:10])}",
+                            "{driver_name}",
+                            "{i}", 
+                            "{TEAM_IDS[packet.participants[i].teamId]}")
+                            ''')
+                    conn.commit()
+
+    def updatePlayerTable(self, packet):
+        player_ids = cur.execute(
+            f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
+        session_type = cur.execute(
+            f'SELECT session_type FROM session WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0]
+        grid_pos_val = cur.execute(
+            f'SELECT grid_position FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0]
+        for i in range(len(player_ids)):
+            if session_type == 'Race' and grid_pos_val is None:
+                cur.execute(
+                    f'UPDATE player SET grid_position={packet.lapData[i].gridPosition} WHERE player_id={player_ids[i][0]}')
+                conn.commit()
+
+
+
+    def lapDataTable(self, packet):
+
+        player_ids = cur.execute(
+            f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
+
+        for i in range(len(player_ids)):
+            # lap_number = cur.execute(f'SELECT lap_number FROM lap_data WHERE lap_id=(SELECT max(lap_id) FROM lap_data WHERE player_id = {player_ids[i]})').fetchone()
+            lap_number = cur.execute(
+                f'SELECT lap_number FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()
+            lap_number = lap_number[0] if lap_number is not None else None
+# {player_ids[i]}
+            if lap_number == packet.lapData[i].currentLapNum:
+                #  = cur.execute(
+                #     f'SELECT grid_position FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0]
+                cur.execute(
+                    f'UPDATE lap_data SET sector_1_time = {packet.lapData[i].sector1TimeInMS}, sector_2_time = {packet.lapData[i].sector2TimeInMS} WHERE player_id = {player_ids[i][0]} AND lap_number={lap_number}')
+
+            elif packet.lapData[i].currentLapNum != lap_number:
+                sector1_time = cur.execute(
+                    f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()[0]
+                sector2_time = cur.execute(
+                    f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()[0]
+                
+                if None not in [packet.lapData[i].lastLapTimeInMS, sector1_time, sector2_time]:
+                    sector3_time = packet.lapData[i].lastLapTimeInMS - sector1_time - sector2_time
+                    cur.execute(
+                        f'UPDATE lap_data SET lap_time = {packet.lapData[i].lastLapTimeInMS}, sector_3_time={sector3_time} WHERE player_id = {player_ids[i][0]} AND lap_number={lap_number}')
+
+                else:
+                    sector3_time = None
+
+                cur.execute(
+                    f'''INSERT INTO lap_data 
+                            (player_id, lap_number, car_position)
+                            VALUES (
+                                "{player_ids[i][0]}",
+                                "{packet.lapData[i].currentLapNum}",
+                                "{packet.lapData[i].carPosition}"
+                                )''')
+                
+                
+            conn.commit()
+
+
+    def setupTable():
+        pass
+    
+    def telemetryTable():
+        ct = datetime.datetime.now()
+        player_ids = cur.execute(
+            f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
+        #loop through them then:
+        for i in range(len(player_ids)):
+
+            pass
+            #using player id get last lap_id
+            lap_id = cur.execute(
+                f'SELECT lap_id FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_id DESC LIMIT 1').fetchone()[0]
+            # lap_id = lap_number[0] if lap_number is not None else None
+
+            #insert into telem
+        pass
 
 
 
@@ -220,8 +255,8 @@ use_data = UsefulData()
 
 time_from_last_print = time.time()
 
-conn = sqlite3.connect('../flask_db.db')
-c = conn.cursor()
+conn = sqlite3.connect('./flask_db.db')
+cur = conn.cursor()
 
 
 
@@ -230,9 +265,9 @@ while True:
 
     #query the data, if the shouldrun is true, then run, if not break out of loop
 
-    if Streaming.query.filter_by(should_run=1).first() is None:
-        break
-    else:
+    # if Streaming.query.filter_by(should_run=1).first() is None:
+    #     break
+    # else:
         data, addr = sock.recvfrom(PACKET_SIZE)
         packet = unpack_udp_packet(data)
 
@@ -255,9 +290,15 @@ while True:
         if packet.header.packetId == 1:
             use_data.sessionTable(current_frame_data, player_car, packet)
         elif packet.header.packetId == 4:
-            use_data.addTeam(packet, player_car)
+            use_data.updateSessionTable(packet)
+            use_data.playerTable(packet)
 
-    
+        elif packet.header.packetId == 2:
+            use_data.updatePlayerTable(packet)
+            use_data.lapDataTable(packet)
+
+        elif packet.header.packetId == 6:
+            pass
 
         # if packet.header.packetId == 1:
         #     print(packet.header.sessionUID)

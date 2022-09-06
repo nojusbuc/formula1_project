@@ -36,11 +36,6 @@ FORMULA_TYPES = {
     7: 'F2 2021',
 }
 
-IS_ONLINE = {
-    0: False,
-    1: True
-}
-
 
 DRIVER_IDS = {
     0: 'Carlos Sainz',
