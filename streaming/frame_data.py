@@ -163,9 +163,10 @@ class UsefulData():
         player_ids = cur.execute(
             f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
         session_type = cur.execute(
-            f'SELECT session_type FROM session WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0]
+            f'SELECT session_type FROM session WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0] if cur.execute(
+            f'SELECT session_type FROM session WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone() is not None else None
         grid_pos_val = cur.execute(
-            f'SELECT grid_position FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0]
+            f'SELECT grid_position FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()
         for i in range(len(player_ids)):
             if session_type == 'Race' and grid_pos_val is None:
                 cur.execute(
@@ -178,6 +179,8 @@ class UsefulData():
 
         player_ids = cur.execute(
             f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
+
+
 
         for i in range(len(player_ids)):
             # lap_number = cur.execute(f'SELECT lap_number FROM lap_data WHERE lap_id=(SELECT max(lap_id) FROM lap_data WHERE player_id = {player_ids[i]})').fetchone()
@@ -193,12 +196,12 @@ class UsefulData():
 
             elif packet.lapData[i].currentLapNum != lap_number:
                 sector1_time = cur.execute(
-                    f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()[0]
+                    f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()
                 sector2_time = cur.execute(
-                    f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()[0]
+                    f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()
                 
                 if None not in [packet.lapData[i].lastLapTimeInMS, sector1_time, sector2_time]:
-                    sector3_time = packet.lapData[i].lastLapTimeInMS - sector1_time - sector2_time
+                    sector3_time = packet.lapData[i].lastLapTimeInMS - sector1_time[0] - sector2_time[0]
                     cur.execute(
                         f'UPDATE lap_data SET lap_time = {packet.lapData[i].lastLapTimeInMS}, sector_3_time={sector3_time} WHERE player_id = {player_ids[i][0]} AND lap_number={lap_number}')
 
@@ -221,21 +224,34 @@ class UsefulData():
     def setupTable():
         pass
     
-    def telemetryTable():
+    def telemetryTable(self, packet):
         ct = datetime.datetime.now()
         player_ids = cur.execute(
             f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
         #loop through them then:
         for i in range(len(player_ids)):
-
-            pass
             #using player id get last lap_id
             lap_id = cur.execute(
-                f'SELECT lap_id FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_id DESC LIMIT 1').fetchone()[0]
+                f'SELECT lap_id FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_id DESC LIMIT 1').fetchone()
             # lap_id = lap_number[0] if lap_number is not None else None
 
             #insert into telem
-        pass
+            if lap_id is not None:
+                cur.execute(
+                    f'''INSERT INTO telemetry 
+                                (lap_id, timestamp, speed, throttle, steer, brake, clutch, gear, engine_rpm, drs)
+                                VALUES (
+                                    "{lap_id[0]}",
+                                    "{ct}",
+                                    "{packet.carTelemetryData[i].speed}",
+                                    "{packet.carTelemetryData[i].throttle}",
+                                    "{packet.carTelemetryData[i].steer}",
+                                    "{packet.carTelemetryData[i].brake}",
+                                    "{packet.carTelemetryData[i].clutch}",
+                                    "{packet.carTelemetryData[i].gear}",
+                                    "{packet.carTelemetryData[i].engineRPM}",
+                                    "{packet.carTelemetryData[i].drs}"
+                                    )''')
 
 
 
@@ -263,11 +279,7 @@ cur = conn.cursor()
 
 while True:
 
-    #query the data, if the shouldrun is true, then run, if not break out of loop
 
-    # if Streaming.query.filter_by(should_run=1).first() is None:
-    #     break
-    # else:
         data, addr = sock.recvfrom(PACKET_SIZE)
         packet = unpack_udp_packet(data)
 
@@ -282,10 +294,6 @@ while True:
                     current_frame, current_frame_data, player_car)
         except:
             current_frame = packet.header.frameIdentifier
-
-                # use_data.write_to_json()
-        # print(packet.header.sessionUID)
-
         
         if packet.header.packetId == 1:
             use_data.sessionTable(current_frame_data, player_car, packet)
@@ -298,7 +306,7 @@ while True:
             use_data.lapDataTable(packet)
 
         elif packet.header.packetId == 6:
-            pass
+            use_data.telemetryTable(packet)
 
         # if packet.header.packetId == 1:
         #     print(packet.header.sessionUID)
