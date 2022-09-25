@@ -22,7 +22,9 @@ console.log("oy")
 function startReceivingData() {
 
     // location.href = '/telemetry'
-    fetch('/pyfile', {})
+    fetch('/pyfile', {
+        method: 'GET'
+    })
 
 }
 
@@ -31,13 +33,10 @@ function stopReceivingData() {
     console.log('hihi')
     // fetch('/stop_python', {})
 
-    // //call the end function in python
-    // fetch('/pyfile', {
-    //     headers: {
-    //         'Content-type': 'application/json'
-    //     },
-    //     method: 'POST',
-    //     body: JSON.stringify({ 'shouldRun': 'False' })
+    
+    fetch('/stop_python', {
+        method: 'GET'
+    })
 
     // db.run('SELECT * FROM runningProgram WHERE id = 0')
     // db.run('UPDATE runningProgram SET shouldRun = "False"')

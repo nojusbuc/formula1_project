@@ -5,7 +5,7 @@ Model = declarative_base()
 
 engine = create_engine('sqlite:///flask_db.db')
 
-class Session(Model):
+class SessionsTable(Model):
     __tablename__ = 'session'
     session_id = Column('session_id', Integer, primary_key=True)
     track_id = Column(Integer)
@@ -18,10 +18,10 @@ class Session(Model):
     players = relationship('Player', backref='session')
 
     players = relationship(
-        "Player", back_populates="session", cascade="all, delete-orphan")
+        "PlayersTable", backref="session")
 
 
-class Player(Model):  # points to Session
+class PlayersTable(Model):  # points to Session
 
 
     __tablename__ = 'player'
@@ -32,11 +32,11 @@ class Player(Model):  # points to Session
     driver = Column(String)
     player_index = Column(Integer)
     grid_position = Column(Integer)
-    laps = relationship('LapData', back_populates='player')
-    setups = relationship('Setup', back_populates='player')
+    laps = relationship('LapsTable', backref='player')
+    setups = relationship('SetupsTable', backref='setup')
 
 
-class LapData(Model):  # points to Car class
+class LapsTable(Model):  # points to Car class
     __tablename__ = 'lap_data'
     player_id = Column(Integer, ForeignKey(
         'player.player_id'))
@@ -57,10 +57,10 @@ class LapData(Model):  # points to Car class
     driverStatus = Column(String)
 
     telemetry_data = relationship(
-        'Telemetry', back_populates='lap_data')
+        'TelemetryTable', backref='lap_data')
 
 
-class Setup(Model):  # points to Car class
+class SetupsTable(Model):  # points to Car class
     __tablename__ = 'setup'
     player_id = Column(Integer, ForeignKey('player.player_id'))
     setup_id = Column(Integer, primary_key=True)
@@ -86,9 +86,10 @@ class Setup(Model):  # points to Car class
     fuel_load = Column(Float)
 
 
-class Telemetry(Model):  # points to LapData class
+class TelemetryTable(Model):  # points to LapData class
     __tablename__ = 'telemetry'
     lap_id = Column(Integer, ForeignKey('lap_data.lap_id'))
+    player_id = Column
     timestamp = Column(DateTime, primary_key=True)
     speed = Column(Integer)
     throttle = Column(Float)
