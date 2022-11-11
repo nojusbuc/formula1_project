@@ -13,15 +13,16 @@ import os
 
 # from dattypes import *
 from streaming.dattypes import *
-
-sys.path.append('./')
 # from models import Session, Player, Streaming
 
 # sessions = db.session.query.order_by(UserSession.session_uid)
 
 class UsefulData():
 
-    def __init__(self, cur, conn):
+    
+
+    def __init__(self, cur=None, conn=None):
+        
         self.list_data = {
             # loop through every frame? add frame as key?
             'speed': None,
@@ -30,20 +31,24 @@ class UsefulData():
             'gear': None,
             'engineRPM': None,
             'drs': None,
-            'tyreWear': None,
-            'carPosition': None,
-            'lastLapTime': None,
-            'bestLapTime': None,
-            'sector1Time': None,
-            'sector2Time': None,
-            'ersActivated': None,
-            'tyreSurfaceTemps': None,
-
+            # 'tyreWear': None,
+            # 'carPosition': None,
+            # 'lastLapTime': None,
+            # 'bestLapTime': None,
+            # 'sector1Time': None,
+            # 'sector2Time': None,
+            # 'ersActivated': None,
+            # 'tyreSurfaceTemps': None,
         }
-        # self.conn = sqlite3.connect('./flask_db.db')
-        # self.cur = self.conn.cursor()
+
+
         self.conn = conn
         self.cur = cur
+    
+    def print_object(self):
+        # print(self.x)
+        # print(UsefulData.list_data)
+        return self.list_data
 
     def sessionTable(self, current_frame_data, player_car, packet):
 
@@ -176,7 +181,7 @@ class UsefulData():
                 self.cur.execute(
                     f'''INSERT INTO telemetry
                                 (lap_id, timestamp, speed, throttle, steer,
-                                 brake, clutch, gear, engine_rpm, drs)
+                                brake, clutch, gear, engine_rpm, drs)
                                 VALUES (
                                     "{lap_id[0]}",
                                     "{ct}",
@@ -188,7 +193,18 @@ class UsefulData():
                                     "{packet.carTelemetryData[i].gear}",
                                     "{packet.carTelemetryData[i].engineRPM}",
                                     "{packet.carTelemetryData[i].drs}"
-                                    )''')
+                                )''')
+        self.conn.commit()
+        
+        self.list_data = {
+            'speed': packet.carTelemetryData[i].speed,
+            'throttle': packet.carTelemetryData[i].throttle,
+            'brake': packet.carTelemetryData[i].brake,
+            'gear': packet.carTelemetryData[i].gear,
+            'engineRPM': packet.carTelemetryData[i].engineRPM,
+            'drs': packet.carTelemetryData[i].drs,
+        }
+        return self.list_data
 
 
 

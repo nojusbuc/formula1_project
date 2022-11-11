@@ -1,5 +1,5 @@
 import sys
-from flask import Flask
+from flask import Flask, render_template
 import socket
 import select
 import queue
@@ -9,90 +9,93 @@ import time
 from streaming.frame_data import UsefulData
 from streaming.packets import PacketID, unpack_udp_packet
 import multiprocessing
+from multiprocessing import Manager
+from multiprocessing.managers import BaseManager
+from contextlib import closing
+import asyncio
+from flask_sqlalchemy import SQLAlchemy
+from variab import use_data
 
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flask_db.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy()
+db.init_app(app)
+
 
 def listen_to_udp():
 
-    SERVER = socket.gethostbyname(socket.gethostname())
-    PORT = 20777
+    with closing(sqlite3.connect("./flask_db.db")) as conn:
+        with closing(conn.cursor()) as cur:
 
-    PACKET_SIZE = 2048
+            print('udp')
+            SERVER = socket.gethostbyname(socket.gethostname())
+            PORT = 20777
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((SERVER, PORT))
+            PACKET_SIZE = 2048
 
-    current_frame = None
-    current_frame_data = {}
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.bind((SERVER, PORT))
 
-    conn = sqlite3.connect('./flask_db.db')
-    cur = conn.cursor()
+            current_frame_data = {}
 
-    use_data = UsefulData(conn=conn, cur=cur)
+            use_data.conn = conn
+            use_data.cur = cur
 
-    time_from_last_print = time.time()
 
-    try:
-        while True:
-            print('waba')
 
-            # should_run = cur.execute(
-            #     f'SELECT should_run FROM streaming WHERE should_run = 1').fetchone()
-            # if should_run is not None:
+            while True:
 
-            data, addr = sock.recvfrom(PACKET_SIZE)
-            packet = unpack_udp_packet(data)
+                # should_run = cur.execute(
+                #     f'SELECT should_run FROM streaming WHERE should_run = 1').fetchone()
+                # if should_run is not None:
 
-            current_frame_data[PacketID(packet.header.packetId)] = packet
+                data, addr = sock.recvfrom(PACKET_SIZE)
+                packet = unpack_udp_packet(data)
 
-            any_packet = next(iter(current_frame_data.values()))
-            player_car = any_packet.header.playerCarIndex
+                current_frame_data[PacketID(packet.header.packetId)] = packet
 
-            current_frame = packet.header.frameIdentifier
-            # if time_from_last_print + 0.1 < time.time()
+                any_packet = next(iter(current_frame_data.values()))
+                player_car = any_packet.header.playerCarIndex
 
-            # print(any_packet)
 
-            if packet.header.packetId == 1:
-                use_data.sessionTable(current_frame_data, player_car, packet)
-            elif packet.header.packetId == 4:
-                use_data.updateSessionTable(packet)
-                use_data.playerTable(packet)
+                if packet.header.packetId == 1:
+                    use_data.sessionTable(current_frame_data, player_car, packet)
+                elif packet.header.packetId == 4:
+                    use_data.updateSessionTable(packet)
+                    use_data.playerTable(packet)
 
-            elif packet.header.packetId == 2:
-                use_data.updatePlayerTable(packet)
-                use_data.lapDataTable(packet)
+                elif packet.header.packetId == 2:
+                    use_data.updatePlayerTable(packet)
+                    use_data.lapDataTable(packet)
 
-            elif packet.header.packetId == 6:
-                use_data.telemetryTable(packet)
-
-    except KeyboardInterrupt:
-        multiprocessing.Process.terminate(self=p1)
-        # p1.terminate()
+                elif packet.header.packetId == 6:
+                    # use_data.telemetryTable()
+                    global telem_obj
+                    telem_obj = use_data.telemetryTable(packet)
+                    print(telem_obj)
+                    # print(use_data.list_data, 'PROC.PY when packet is telemetry')
 
 
 @app.route('/')
 def index():
-    # listen_to_udp.delay()
-    return "oof"
+    return render_template('index.html')
 
 
-@app.route('/pyfile')
-def handle_udp():
-    listen_to_udp.delay()
+@app.route('/getjson', methods=['GET', 'POST'])
+def get_json():
+    return telem_obj
 
-
-def run_flask():
-    print('running server')
-    app.run(port=5000, debug=True)
+@app.route('/telem')
+def telemetry():
+    return render_template('telem.html')
 
 
 if __name__ == '__main__':
-    p1 = multiprocessing.Process(target=run_flask)
+    
     p2 = multiprocessing.Process(target=listen_to_udp)
-
-    p1.start()
+    p2.daemon = True
     p2.start()
-
+    app.run(port=5000)
