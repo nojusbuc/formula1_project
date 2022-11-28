@@ -10,8 +10,10 @@ class PacketStructure(ctypes.LittleEndianStructure):
 
         fstr_list = []
 
+
         for field in self._fields_:
             fname = field[0]
+            # getattr returns the value of the attribute object, if not found, returns default value provided
             value = getattr(self, fname)
 
             if isinstance(value, (PacketStructure, int, float, bytes)):
@@ -1345,28 +1347,42 @@ class UnpackError(Exception):
     pass
 
 
-def unpack_udp_packet(packet: bytes) -> PacketStructure:
+#function that returns a more structured object from udp stream
+def unpack_udp_packet(packet: bytes) -> PacketStructure: 
 
+    # gets the size of the packet and its header
     packet_size = len(packet)
     header_size = ctypes.sizeof(PacketHeader)
 
+    # compares packet and packet header size. In this case, the packets are always larger than
+    # their headers. To avoid stopping the program, a custom exception is raised.
     if packet_size < header_size:
         raise UnpackError(
             f"Bad telemetry packet: too short ({packet_size} bytes)")
 
+    # copies a buffer object PacketHeader to a variable
     header = PacketHeader.from_buffer_copy(packet)
+    # separates the buffer object into information that will be required later
     key = (header.packetFormat, header.packetVersion, header.packetId)
 
+    # exception handling if the packet information does not have the expected value
     if key not in HeaderFieldsToPacketType:
         raise UnpackError("bad telemetry packet")
 
+    #getting the size of the expected packet based on its id
     packet_type = HeaderFieldsToPacketType[key]
     expected_packet_size = ctypes.sizeof(packet_type)
 
+    # exception handling if packet sizes do not match
     if packet_size != expected_packet_size:
 
         raise UnpackError(
             "Bad telemetry packet: bad size for {} packet; expected {} bytes but received {} bytes. header size = {}".format(
                 packet_type.__name__, expected_packet_size, packet_size, header_size))
 
+    # returning the buffer object of the packet
     return packet_type.from_buffer_copy(packet)
+
+
+
+

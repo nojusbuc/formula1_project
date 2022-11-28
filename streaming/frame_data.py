@@ -20,7 +20,6 @@ from streaming.dattypes import *
 class UsefulData():
 
     
-
     def __init__(self, cur=None, conn=None):
         
         self.list_data = {
@@ -82,8 +81,6 @@ class UsefulData():
 
     def playerTable(self, packet):
 
-        # val = self.cur.execute(
-        #     f'SELECT player_id FROM player WHERE player_id = {int(str(packet.playerId) + str(packet.header.sessionUID)[:7])}').fetchone()
         val = self.cur.execute(
             f'SELECT player_id FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchall()
 
@@ -129,28 +126,22 @@ class UsefulData():
             lap_number = self.cur.execute(
                 f'SELECT lap_number FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()
             lap_number = lap_number[0] if lap_number is not None else None
-# {player_ids[i]}
             if lap_number == packet.lapData[i].currentLapNum:
-                #  = self.cur.execute(
-                #     f'SELECT grid_position FROM player WHERE session_id = {int(str(packet.header.sessionUID)[:10])}').fetchone()[0]
                 self.cur.execute(
-                    f'UPDATE lap_data SET sector_1_time = {packet.lapData[i].sector1TimeInMS}, sector_2_time = {packet.lapData[i].sector2TimeInMS} WHERE player_id = {player_ids[i][0]} AND lap_number={lap_number}')
-
+                    f'''UPDATE lap_data SET sector_1_time = {packet.lapData[i].sector1TimeInMS}, sector_2_time = {packet.lapData[i].sector2TimeInMS}
+                     WHERE player_id = {player_ids[i][0]} AND lap_number={lap_number}''')
             elif packet.lapData[i].currentLapNum != lap_number:
                 sector1_time = self.cur.execute(
                     f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()
                 sector2_time = self.cur.execute(
                     f'SELECT sector_1_time FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_number DESC LIMIT 1').fetchone()
-
                 if None not in [packet.lapData[i].lastLapTimeInMS, sector1_time, sector2_time]:
                     sector3_time = packet.lapData[i].lastLapTimeInMS - \
                         sector1_time[0] - sector2_time[0]
                     self.cur.execute(
                         f'UPDATE lap_data SET lap_time = {packet.lapData[i].lastLapTimeInMS}, sector_3_time={sector3_time} WHERE player_id = {player_ids[i][0]} AND lap_number={lap_number}')
-
                 else:
                     sector3_time = None
-
                 self.cur.execute(
                     f'''INSERT INTO lap_data
                             (player_id, lap_number, car_position)
@@ -159,7 +150,6 @@ class UsefulData():
                                 "{packet.lapData[i].currentLapNum}",
                                 "{packet.lapData[i].carPosition}"
                                 )''')
-
             self.conn.commit()
 
     def setupTable():
@@ -174,8 +164,6 @@ class UsefulData():
             # using player id get last lap_id
             lap_id = self.cur.execute(
                 f'SELECT lap_id FROM lap_data WHERE player_id={player_ids[i][0]} ORDER BY lap_id DESC LIMIT 1').fetchone()
-            # lap_id = lap_number[0] if lap_number is not None else None
-
             # insert into telem
             if lap_id is not None:
                 self.cur.execute(
@@ -195,7 +183,6 @@ class UsefulData():
                                     "{packet.carTelemetryData[i].drs}"
                                 )''')
         self.conn.commit()
-        
         self.list_data = {
             'speed': packet.carTelemetryData[i].speed,
             'throttle': packet.carTelemetryData[i].throttle,
@@ -204,7 +191,7 @@ class UsefulData():
             'engineRPM': packet.carTelemetryData[i].engineRPM,
             'drs': packet.carTelemetryData[i].drs,
         }
-        return self.list_data
+        # return self.list_data
 
 
 
